@@ -15,6 +15,7 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
+    private MediaPlayer mediaPlayer;
     private boolean isPlaying;
 
     @Override
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         isPlaying = false;
 
         Uri uri = Uri.parse("http://techbooster.org/wp-content/uploads/2015/10/techboosterfm_vol_02.mp3");
-        final MediaPlayer mediaPlayer = MediaPlayer.create(this, uri);
+        mediaPlayer = MediaPlayer.create(this, uri);
 
         Button playAndPauseButton = (Button) findViewById(R.id.play_and_pause_button);
         playAndPauseButton.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +64,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onDestroy() {
+        mediaPlayer.release();
+        mediaPlayer = null;
+        super.onDestroy();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
