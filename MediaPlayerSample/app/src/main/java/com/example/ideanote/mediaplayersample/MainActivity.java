@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MediaPlayer mediaPlayer;
     private boolean isPlaying;
+    private boolean isStop; // STOPボタンを押した直後かどうか
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         isPlaying = false;
+        isStop = false;
 
         Uri uri = Uri.parse("http://techbooster.org/wp-content/uploads/2015/10/techboosterfm_vol_02.mp3");
         mediaPlayer = MediaPlayer.create(this, uri);
@@ -34,12 +36,21 @@ public class MainActivity extends AppCompatActivity {
         playAndPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isPlaying) {
-                    mediaPlayer.start();
-                    isPlaying = !isPlaying;
-                } else {
-                    mediaPlayer.pause();
-                    isPlaying = !isPlaying;
+                try {
+                    if (isStop) {
+                        mediaPlayer.prepare();
+                        isStop = false;
+                    }
+
+                    if (!isPlaying) {
+                        mediaPlayer.start();
+                        isPlaying = !isPlaying;
+                    } else {
+                        mediaPlayer.pause();
+                        isPlaying = !isPlaying;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -51,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 if (isPlaying) {
                     mediaPlayer.stop();
                     isPlaying = false;
+                    isStop = true;
                 }
             }
         });
