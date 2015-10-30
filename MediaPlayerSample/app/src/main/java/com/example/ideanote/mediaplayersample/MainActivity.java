@@ -12,11 +12,13 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.TextView;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
     private MediaPlayer mediaPlayer;
-    private boolean isPlaying;
     private boolean isStop; // STOPボタンを押した直後かどうか
 
     @Override
@@ -26,28 +28,32 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        isPlaying = false;
         isStop = false;
 
-        Uri uri = Uri.parse("http://techbooster.org/wp-content/uploads/2015/10/techboosterfm_vol_02.mp3");
-        mediaPlayer = MediaPlayer.create(this, uri);
+        initMediaPlayer();
+
+        TextView stateView = (TextView) findViewById(R.id.state_view);
+        stateView.setText("Loading...");
 
         Button playAndPauseButton = (Button) findViewById(R.id.play_and_pause_button);
+        playAndPauseButton.setEnabled(false);
         playAndPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
                     if (isStop) {
-                        mediaPlayer.prepare();
                         isStop = false;
-                    }
-
-                    if (!isPlaying) {
+                        TextView textView = (TextView) findViewById(R.id.state_view);
+                        textView.setText("Playing");
                         mediaPlayer.start();
-                        isPlaying = !isPlaying;
+                    } else if (!mediaPlayer.isPlaying()) {
+                        TextView textView = (TextView) findViewById(R.id.state_view);
+                        textView.setText("Playing");
+                        mediaPlayer.start();
                     } else {
+                        TextView textView = (TextView) findViewById(R.id.state_view);
+                        textView.setText("Pause");
                         mediaPlayer.pause();
-                        isPlaying = !isPlaying;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -56,13 +62,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Button stopButton = (Button) findViewById(R.id.stop_button);
+        stopButton.setEnabled(false);
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isPlaying) {
+                TextView textView = (TextView) findViewById(R.id.state_view);
+                textView.setText("Stop");
+                try {
+                    mediaPlayer.pause();
                     mediaPlayer.stop();
-                    isPlaying = false;
+                    mediaPlayer.prepareAsync();
                     isStop = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -105,5 +117,33 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initMediaPlayer() {
+        mediaPlayer = new MediaPlayer();
+
+        Uri uri = Uri.parse("http://techbooster.org/wp-content/uploads/2015/10/techboosterfm_vol_02.mp3");
+
+        try {
+            mediaPlayer.setDataSource(this, uri);
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    TextView textView = (TextView) findViewById(R.id.state_view);
+                    textView.setText("Ready");
+                    Button playAndPauseButton = (Button) findViewById(R.id.play_and_pause_button);
+                    if (!playAndPauseButton.isEnabled()) {
+                        playAndPauseButton.setEnabled(true);
+                    }
+                    Button stopButton = (Button) findViewById(R.id.stop_button);
+                    if (!stopButton.isEnabled()) {
+                        stopButton.setEnabled(true);
+                    }
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mediaPlayer.prepareAsync();
     }
 }
