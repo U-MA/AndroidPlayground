@@ -1,5 +1,6 @@
 package com.example.ideanote.mediaplayersample;
 
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -20,6 +22,11 @@ public class MainActivity extends AppCompatActivity {
 
     private MediaPlayer mediaPlayer;
     private boolean isStop; // STOPボタンを押した直後かどうか
+
+    private TextView stateView;
+    private Button playAndPauseButton;
+    private Button stopButton;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +39,12 @@ public class MainActivity extends AppCompatActivity {
 
         initMediaPlayer();
 
-        TextView stateView = (TextView) findViewById(R.id.state_view);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+
+        stateView = (TextView) findViewById(R.id.state_view);
         stateView.setText("Loading...");
 
-        Button playAndPauseButton = (Button) findViewById(R.id.play_and_pause_button);
+        playAndPauseButton = (Button) findViewById(R.id.play_and_pause_button);
         playAndPauseButton.setEnabled(false);
         playAndPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,17 +70,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button stopButton = (Button) findViewById(R.id.stop_button);
+        stopButton = (Button) findViewById(R.id.stop_button);
         stopButton.setEnabled(false);
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView textView = (TextView) findViewById(R.id.state_view);
-                textView.setText("Stop");
+                stateView.setText("Stop");
                 try {
                     mediaPlayer.pause();
-                    mediaPlayer.stop();
-                    mediaPlayer.prepareAsync();
+                    mediaPlayer.seekTo(0);
                     isStop = true;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -120,30 +127,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initMediaPlayer() {
-        mediaPlayer = new MediaPlayer();
-
         Uri uri = Uri.parse("http://techbooster.org/wp-content/uploads/2015/10/techboosterfm_vol_02.mp3");
+        Log.d("URI", uri.toString());
 
-        try {
-            mediaPlayer.setDataSource(this, uri);
-            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    TextView textView = (TextView) findViewById(R.id.state_view);
-                    textView.setText("Ready");
-                    Button playAndPauseButton = (Button) findViewById(R.id.play_and_pause_button);
-                    if (!playAndPauseButton.isEnabled()) {
-                        playAndPauseButton.setEnabled(true);
-                    }
-                    Button stopButton = (Button) findViewById(R.id.stop_button);
-                    if (!stopButton.isEnabled()) {
-                        stopButton.setEnabled(true);
-                    }
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                stateView.setText("Ready");
+                if (!playAndPauseButton.isEnabled()) {
+                    playAndPauseButton.setEnabled(true);
                 }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        mediaPlayer.prepareAsync();
+                if (!stopButton.isEnabled()) {
+                    stopButton.setEnabled(true);
+                }
+            }
+        });
+        mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+            @Override
+            public void onBufferingUpdate(MediaPlayer mp, int percent) {
+                progressBar.setProgress(percent);
+            }
+        });
     }
 }
