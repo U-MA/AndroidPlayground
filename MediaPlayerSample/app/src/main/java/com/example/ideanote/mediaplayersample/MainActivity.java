@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
             @Override
             public void onBufferingUpdate(MediaPlayer mp, int percent) {
-                progressBar.setProgress(percent);
+                progressBar.setSecondaryProgress(percent);
             }
         });
     }
