@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private Button stopButton;
     private ProgressBar progressBar;
 
+    private Timer timer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,14 +57,17 @@ public class MainActivity extends AppCompatActivity {
                         TextView textView = (TextView) findViewById(R.id.state_view);
                         textView.setText("Playing");
                         mediaPlayer.start();
+                        timer.start();
                     } else if (!mediaPlayer.isPlaying()) {
                         TextView textView = (TextView) findViewById(R.id.state_view);
                         textView.setText("Playing");
                         mediaPlayer.start();
+                        timer.start();
                     } else {
                         TextView textView = (TextView) findViewById(R.id.state_view);
                         textView.setText("Pause");
                         mediaPlayer.pause();
+                        timer.stop();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -80,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
                     mediaPlayer.pause();
                     mediaPlayer.seekTo(0);
                     isStop = true;
+                    timer.stop();
+                    progressBar.setProgress(0);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -129,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
     private void initMediaPlayer() {
         Uri uri = Uri.parse("http://techbooster.org/wp-content/uploads/2015/10/techboosterfm_vol_02.mp3");
         Log.d("URI", uri.toString());
+        final int mediaLengthMillis = (13 * 60 + 14) * 1000; // from podcast.rss
 
         mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -147,6 +155,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onBufferingUpdate(MediaPlayer mp, int percent) {
                 progressBar.setSecondaryProgress(percent);
+            }
+        });
+
+        timer = new Timer(new Timer.Callback() {
+            @Override
+            public void tick(long timeMillis) {
+                if (isStop) {
+                    progressBar.setProgress(0);
+                } else {
+                    int percent = (mediaPlayer.getCurrentPosition() * 100) / mediaLengthMillis;
+                    progressBar.setProgress(percent);
+                }
             }
         });
     }
