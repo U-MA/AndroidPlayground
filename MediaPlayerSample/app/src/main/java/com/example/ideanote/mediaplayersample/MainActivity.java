@@ -134,7 +134,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initMediaPlayer() {
-        Uri uri = Uri.parse("http://techbooster.org/wp-content/uploads/2015/10/techboosterfm_vol_02.mp3");
+        String techbooster_url = "http://techbooster.org/wp-content/uploads/2015/10/techboosterfm_vol_02.mp3";
+        Uri uri = Uri.parse(techbooster_url);
         Log.d("URI", uri.toString());
         final int mediaLengthMillis = (13 * 60 + 14) * 1000; // from podcast.rss
 
