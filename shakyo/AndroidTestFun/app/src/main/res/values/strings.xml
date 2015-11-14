@@ -5,4 +5,7 @@
     <string name="title_activity_click_fun">ClickFunActivity</string>
     <string name="click_me">Click Me</string>
     <string name="button_clicked">Button clicked!</string>
+    <string name="title_activity_launch">LaunchActivity</string>
+    <string name="launch_next">Launch Next</string>
+    <string name="title_activity_next">NextActivity</string>
 </resources>
