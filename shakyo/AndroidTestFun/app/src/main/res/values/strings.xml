@@ -2,4 +2,7 @@
     <string name="app_name">AndroidTestingFun</string>
     <string name="action_settings">Settings</string>
     <string name="my_first_test">My First Test</string>
+    <string name="title_activity_click_fun">ClickFunActivity</string>
+    <string name="click_me">Click Me</string>
+    <string name="button_clicked">Button clicked!</string>
 </resources>
