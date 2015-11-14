@@ -8,4 +8,6 @@
     <string name="title_activity_launch">LaunchActivity</string>
     <string name="launch_next">Launch Next</string>
     <string name="title_activity_next">NextActivity</string>
+    <string name="title_activity_sender">SenderActivity</string>
+    <string name="title_activity_receiver">ReceiverActivity</string>
 </resources>
