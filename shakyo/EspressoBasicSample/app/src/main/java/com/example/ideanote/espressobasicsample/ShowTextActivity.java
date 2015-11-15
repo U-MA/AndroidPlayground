@@ -8,6 +8,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class ShowTextActivity extends AppCompatActivity {
 
@@ -25,6 +28,12 @@ public class ShowTextActivity extends AppCompatActivity {
         setContentView(R.layout.activity_show_text);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Intent intent = getIntent();
+        String text = intent.getStringExtra(EXTRA_MESSAGE_TEXT);
+
+        TextView textView = (TextView) findViewById(R.id.show_text_view);
+        textView.setText(text);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

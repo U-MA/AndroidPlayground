@@ -38,6 +38,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        activityChangeTextBtn = (Button) findViewById(R.id.activityChangeTextBtn);
+        activityChangeTextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = editTextUserInput.getText().toString();
+                startActivity(ShowTextActivity.createIntent(MainActivity.this, text));
+            }
+        });
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

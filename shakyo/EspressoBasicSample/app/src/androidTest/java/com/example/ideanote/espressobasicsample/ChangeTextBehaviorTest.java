@@ -39,4 +39,13 @@ public class ChangeTextBehaviorTest {
         // Check that the text was changed
         onView(withId(R.id.textToBeChanged)).check(matches(withText(STRING_TO_BE_TYPED)));
     }
+
+    @Test
+    public void changeText_newActivity() {
+        onView(withId(R.id.editTextUserInput)).perform(typeText(STRING_TO_BE_TYPED),
+                closeSoftKeyboard());
+        onView(withId(R.id.activityChangeTextBtn)).perform(click());
+
+        onView(withId(R.id.show_text_view)).check(matches(withText(STRING_TO_BE_TYPED)));
+    }
 }
