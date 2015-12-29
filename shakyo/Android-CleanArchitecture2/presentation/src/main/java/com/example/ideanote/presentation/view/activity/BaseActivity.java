@@ -1,0 +1,9 @@
+package com.example.ideanote.presentation.view.activity;
+
+import android.support.v7.app.AppCompatActivity;
+
+public class BaseActivity extends AppCompatActivity {
+
+    @Inject
+    Navigator navigator;
+}
